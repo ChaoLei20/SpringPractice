@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.UserInfoMapper">
+
+    <!-- 定义 entity实体与数据库表中的字段的对应关系。entity中一般都是驼峰格式 ，而数据库表中一般是下划线的方式 -->
+    <resultMap id="BaseResultMap" type="com.example.entity.UserInfoEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 数据库领域通常禁止 select * from 的操作，一般都需要采取 select 字段1,字段2,字段3... from。通过定义字段sql片段，在查询的时候可以直接引用这个SQL片段 -->
+    <sql id="Base_Column">
+        id, name, age, address
+    </sql>
+
+    <!-- 查询单个用户信息 这里的ID就是Mapper中的方法名，Mapper.java是MyBatis的xml接口，而这个XML中的SQL才是真正功能的地方 -->
+    <select id="findOnlyUserInfo" resultType="com.example.entity.UserInfoEntity">
+        select <include refid="Base_Column"/>
+        from user_info
+        where 1 = 1
+            and user_info.id = #{id, javaType = String}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="findAllUserInfo" resultType="com.example.entity.UserInfoEntity">
+        select <include refid="Base_Column"/>
+        from user_info
+    </select>
+
+    <!-- 插入用户信息，插入的就是entity实体，并且对应到数据库的表字段 -->
+    <insert id="insertUserInfo" parameterType="com.example.entity.UserInfoEntity">
+        insert into user_info(
+        <if test="id != null and id != ''">
+            id,
+        </if>
+        <if test="name != null and name != ''">
+            name,
+        </if>
+        <if test="age != null and age != 0">
+            age,
+        </if>
+        <if test="address != null and address != ''">
+            address
+        </if>
+        )values(
+        <if test="id != null and id != ''">
+            #{id, javaType = String},
+        </if>
+        <if test="name != null and name != ''">
+            #{name, javaType = String},
+        </if>
+        <if test="age != null and age != 0">
+            #{age, javaType = Integer},
+        </if>
+        <if test="address != null and address != ''">
+            #{address,  javaType = Integer}
+        </if>
+        )
+    </insert>
+
+    <!-- 更新用户信息,更新用户信息就是基于全局唯一ID来找到需要更新的信息所在的表中的那行数据 -->
+    <update id="updateUserInfo" parameterType="com.example.entity.UserInfoEntity">
+        update user_info
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name, javaType = String},
+            </if>
+            <if test="age != null and age != 0">
+                age = #{age, javaType = Integer},
+            </if>
+            <if test="address != null and address != 0">
+                address = #{address, javaType = Integer}
+            </if>
+        </set>
+        where id = #{id, javaType = String}
+    </update>
+
+    <!-- 删除用户信息，根据全局唯一ID来就可以了 -->
+    <delete id="deleteUserInfo" parameterType="java.lang.String">
+        delete from user_info
+            where 1 = 1
+            and user_info.id = #{id, javaType = String}
+    </delete>
+
+</mapper>

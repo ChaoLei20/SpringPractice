@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: spring-practice
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testify
+    username: t1
+    password: '1002love613.'
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      max-lifetime: 2000000
+      maximum-pool-size: 20
+server:
+  port: 30000
+mybatis:
+  mapper-locations: classpath:mapper/**.xml
